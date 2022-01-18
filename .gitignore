@@ -1,3 +1,6 @@
 .idea/
 iclient/.idea/
 iclient/__pycache__
+prescriptions/__pycache__/
+__pycache__/
+prescriptions/migrations/__pycache__
