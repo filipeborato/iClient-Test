@@ -12,3 +12,4 @@ class Prescription(models.Model):
     patient_email = models.CharField(max_length=40)
     patient_phone = models.CharField(max_length=40)
     prescription_id = models.IntegerField()
+    prescription_name = models.CharField(max_length=60)
