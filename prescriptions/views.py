@@ -8,30 +8,51 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_exempt
-# @transaction.atomic
+@transaction.atomic
 def prescription_get_set(request):
     if request.method == "POST":
         req = Request()
         data_in = json.loads(request.body)
 
         ids_in = {
-            "phy_id": data_in['physician']['id'],
-            "clinic_id": data_in['clinic']['id'],
-            "patient_id": data_in['patient']['id']
+            "phy_id": int(data_in['physician']['id']),
+            "clinic_id": int(data_in['clinic']['id']),
+            "patient_id": int(data_in['patient']['id'])
         }
-        pres_id = 655
 
         phy = req.request_physicians(ids_in['phy_id'])
         clinic = req.request_physicians(ids_in['clinic_id'])
         patient = req.request_patients(ids_in['patient_id'])
 
-        metric = prepare_metrics(phy, clinic, patient, pres_id)
+        pres = get_or_create(ids_in, data_in['text'])
+
+        metric = prepare_metrics(phy, clinic, patient, pres.id)
         metrics = req.request_metrics(metric)
+        resp = json.dumps(prepare_response(pres, metrics))
 
-        return HttpResponse(metrics, content_type='application/json')
+        return HttpResponse(resp, content_type='application/json')
 
-    # queryset = Prescription.objects.all()
-    # serializer_class = PrescriptionSerializer
+
+def prepare_response(prescription, metrics):
+    return \
+        {
+            "data": {
+                "id": prescription.id,
+                "clinic": {
+                    "id": prescription.clinic_id
+                },
+                "physician": {
+                    "id": prescription.physician_id
+                },
+                "patient": {
+                    "id": prescription.patient_id
+                },
+                "text": prescription.prescription_name,
+                "metric": {
+                    "id": metrics['id']
+                }
+            }
+        }
 
 
 def prepare_metrics(phy, clinic, patient, pres_id):
@@ -48,3 +69,17 @@ def prepare_metrics(phy, clinic, patient, pres_id):
         "prescription_id": pres_id
     }
     return data
+
+
+def get_or_create(ids_in, text):
+    try:
+        p = Prescription.objects.get(clinic_id=ids_in['clinic_id'],
+                                     physician_id=ids_in['phy_id'],
+                                     patient_id=ids_in['patient_id'])
+
+    except Prescription.DoesNotExist:
+        p = Prescription.objects.create(clinic_id=ids_in['clinic_id'],
+                                        physician_id=ids_in['phy_id'],
+                                        patient_id=ids_in['patient_id'],
+                                        prescription_name=text)
+    return p
