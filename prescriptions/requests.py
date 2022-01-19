@@ -18,7 +18,7 @@ class Request:
                 }
             )
 
-            payload = response
+            payload = response.json()
 
             return payload
 
