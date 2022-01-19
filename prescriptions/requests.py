@@ -5,7 +5,6 @@ class Request:
 
     def __init__(self):
         self.uri = "https://mock-api-challenge.dev.iclinic.com.br/"
-        self.bearer = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoicGh5c2ljaWFucyJ9.Ei58MtFFGBK4uzpxwnzLxG0Ljdd-NQKVcOXIS4UYJtA"
 
     def request_metrics(self, metrics):
         try:
@@ -19,7 +18,7 @@ class Request:
                 }
             )
 
-            payload = response.json()
+            payload = response
 
             return payload
 
@@ -36,10 +35,52 @@ class Request:
                 self.uri + f'physicians/{id_phy}/',
                 headers={
                     'cache-control': 'no-cache',
-                    'Authorization': f'Bearer {self.bearer}',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoicGh5c2ljaWFucyJ9.Ei58MtFFGBK4uzpxwnzLxG0Ljdd-NQKVcOXIS4UYJtA',
                 }
             )
             payload = response.json()
+
+            return payload
+
+        except requests.exceptions.HTTPError as err:
+            print(str(err))
+            raise Exception(err)
+        except Exception as e:
+            print(str(e))
+            raise Exception(e)
+
+    def request_clinics(self, id_clinic):
+        try:
+            response = requests.get(
+                self.uri + f'physicians/{id_clinic}/',
+                headers={
+                    'cache-control': 'no-cache',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoiY2xpbmljcyJ9.r3w8KS4LfkKqZhOUK8YnIdLhVGJEqnReSClLCMBIJRQ',
+                }
+            )
+            payload = response.json()
+
+            return payload
+
+        except requests.exceptions.HTTPError as err:
+            print(str(err))
+            raise Exception(err)
+        except Exception as e:
+            print(str(e))
+            raise Exception(e)
+
+    def request_patients(self, id_patient):
+        try:
+            response = requests.get(
+                self.uri + f'patients/{id_patient}/',
+                headers={
+                    'cache-control': 'no-cache',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoicGF0aWVudHMifQ.Pr6Z58GzNRtjX8Y09hEBzl7dluxsGiaxGlfzdaphzVU',
+                }
+            )
+            payload = response.json()
+
+            print(payload)
 
             return payload
 

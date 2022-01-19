@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from prescriptions.views import prescription_get_set
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('prescriptions', prescription_get_set),
