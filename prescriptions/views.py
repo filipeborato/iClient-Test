@@ -1,7 +1,6 @@
 from prescriptions.models import Prescription
-from prescriptions.serializer import PrescriptionSerializer
 import json
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.db import transaction
 from prescriptions.requests import Request
 from django.views.decorators.csrf import csrf_exempt
@@ -10,27 +9,35 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 @transaction.atomic
 def prescription_get_set(request):
-    if request.method == "POST":
-        req = Request()
-        data_in = json.loads(request.body)
+    try:
+        if request.method == "POST":
+            req = Request()
+            data_in = json.loads(request.body)
 
-        ids_in = {
-            "phy_id": int(data_in['physician']['id']),
-            "clinic_id": int(data_in['clinic']['id']),
-            "patient_id": int(data_in['patient']['id'])
+            ids_in = {
+                "phy_id": int(data_in['physician']['id']),
+                "clinic_id": int(data_in['clinic']['id']),
+                "patient_id": int(data_in['patient']['id'])
+            }
+
+            phy = req.request_physicians(ids_in['phy_id'])
+            clinic = req.request_physicians(ids_in['clinic_id'])
+            patient = req.request_patients(ids_in['patient_id'])
+
+            pres = get_or_create(ids_in, data_in['text'])
+
+            metric = prepare_metrics(phy, clinic, patient, pres.id)
+            metrics = req.request_metrics(metric)
+            resp = json.dumps(prepare_response(pres, metrics))
+
+            return HttpResponse(resp, content_type='application/json')
+    except Exception as e:
+        print(str(e))
+        resp = {
+            "error": str(e)
         }
-
-        phy = req.request_physicians(ids_in['phy_id'])
-        clinic = req.request_physicians(ids_in['clinic_id'])
-        patient = req.request_patients(ids_in['patient_id'])
-
-        pres = get_or_create(ids_in, data_in['text'])
-
-        metric = prepare_metrics(phy, clinic, patient, pres.id)
-        metrics = req.request_metrics(metric)
-        resp = json.dumps(prepare_response(pres, metrics))
-
         return HttpResponse(resp, content_type='application/json')
+
 
 
 def prepare_response(prescription, metrics):
