@@ -8,7 +8,7 @@
     pip install -r requirements.txt
     python manage.py runserver
 ```
-<h3>Rota preincipal</h3>
+<h3>Rota principal</h3>
 
 http://localhost:8000/prescriptions
 
