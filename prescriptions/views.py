@@ -1,5 +1,3 @@
-import sys
-
 from prescriptions.models import Prescription
 import json
 from django.http import HttpResponse
