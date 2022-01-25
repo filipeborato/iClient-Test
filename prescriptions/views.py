@@ -22,15 +22,15 @@ def prescription_get_set(request):
 
             phy, err = req.request_physicians(ids_in['phy_id'])
             if err:
-                return HttpResponse(json.dumps(phy), content_type='application/json')
+                return HttpResponse(json.dumps(phy), content_type='application/json', status=400)
 
             clinic, err = req.request_clinics(ids_in['clinic_id'])
             if err:
-                return HttpResponse(json.dumps(clinic), content_type='application/json')
+                return HttpResponse(json.dumps(clinic), content_type='application/json', status=400)
 
             patient, err = req.request_patients(ids_in['patient_id'])
             if err:
-                return HttpResponse(json.dumps(patient), content_type='application/json')
+                return HttpResponse(json.dumps(patient), content_type='application/json', status=400)
 
             pres = get_or_create(ids_in, data_in['text'])
 
