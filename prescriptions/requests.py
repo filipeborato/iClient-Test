@@ -5,6 +5,12 @@ class Request:
 
     def __init__(self):
         self.uri = "https://mock-api-challenge.dev.iclinic.com.br/"
+        self.malformed = {
+            "error": {
+                "code": "01",
+                "message": 'malformed request'
+            }
+        }
 
     def request_metrics(self, metrics):
         try:
@@ -22,12 +28,16 @@ class Request:
 
             return payload
 
-        except requests.exceptions.HTTPError as err:
-            print(str(err))
-            raise Exception(err)
-        except Exception as e:
-            print(str(e))
-            raise Exception(e)
+        except requests.exceptions.HTTPError:
+            raise {
+                "error": {
+                    "code": "04",
+                    "message": 'metrics service not available'
+                }
+            }
+
+        except Exception:
+            raise self.malformed
 
     def request_physicians(self, id_phy):
         try:
@@ -40,14 +50,26 @@ class Request:
             )
             payload = response.json()
 
-            return payload
+            if 'detail' in payload:
+                return {
+                           "error": {
+                               "code": "02",
+                               "message": 'physician not found'
+                           }
+                       }, True
 
-        except requests.exceptions.HTTPError as err:
-            print(str(err))
-            raise Exception(err)
-        except Exception as e:
-            print(str(e))
-            raise Exception(e)
+            return payload, False
+
+        except requests.exceptions.HTTPError:
+            raise {
+                "error": {
+                    "code": "05",
+                    "message": 'physicians service not availabled'
+                }
+            }
+
+        except Exception:
+            raise self.malformed
 
     def request_clinics(self, id_clinic):
         try:
@@ -60,16 +82,26 @@ class Request:
             )
             payload = response.json()
 
-            print(payload)
+            if 'detail' in payload:
+                return {
+                    "error": {
+                        "code": "07",
+                        "message": 'clinic not found'
+                    }
+                }, True
 
-            return payload
+            return payload, False
 
-        except requests.exceptions.HTTPError as err:
-            print(str(err))
-            raise Exception(err)
-        except Exception as e:
-            print(str(e))
-            raise Exception(e)
+        except requests.exceptions.HTTPError:
+            raise {
+                "error": {
+                    "code": "08",
+                    "message": 'patients service not available'
+                }
+            }
+
+        except Exception:
+            raise self.malformed
 
     def request_patients(self, id_patient):
         try:
@@ -82,13 +114,23 @@ class Request:
             )
             payload = response.json()
 
-            print(payload)
+            if 'detail' in payload:
+                return {
+                           "error": {
+                               "code": "03",
+                               "message": 'patient not found'
+                           }
+                       }, True
 
-            return payload
+            return payload, False
 
         except requests.exceptions.HTTPError as err:
-            print(str(err))
-            raise Exception(err)
-        except Exception as e:
-            print(str(e))
-            raise Exception(e)
+            raise {
+                "error": {
+                    "code": "06",
+                    "message": 'patients service not available'
+                }
+            }
+
+        except Exception:
+            raise self.malformed

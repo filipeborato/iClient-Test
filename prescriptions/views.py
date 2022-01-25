@@ -1,3 +1,5 @@
+import sys
+
 from prescriptions.models import Prescription
 import json
 from django.http import HttpResponse
@@ -20,9 +22,17 @@ def prescription_get_set(request):
                 "patient_id": int(data_in['patient']['id'])
             }
 
-            phy = req.request_physicians(ids_in['phy_id'])
-            clinic = req.request_clinics(ids_in['clinic_id'])
-            patient = req.request_patients(ids_in['patient_id'])
+            phy, err = req.request_physicians(ids_in['phy_id'])
+            if err:
+                return HttpResponse(json.dumps(phy), content_type='application/json')
+
+            clinic, err = req.request_clinics(ids_in['clinic_id'])
+            if err:
+                return HttpResponse(json.dumps(clinic), content_type='application/json')
+
+            patient, err = req.request_patients(ids_in['patient_id'])
+            if err:
+                return HttpResponse(json.dumps(patient), content_type='application/json')
 
             pres = get_or_create(ids_in, data_in['text'])
 
@@ -32,12 +42,18 @@ def prescription_get_set(request):
 
             return HttpResponse(resp, content_type='application/json')
     except Exception as e:
-        print(str(e))
-        resp = {
-            "error": str(e)
-        }
-        return HttpResponse(resp, content_type='application/json', status=400)
+        if e is dict:
+            return HttpResponse(json.dumps(e), content_type='application/json', status=400)
 
+        return HttpResponse(
+            {
+                "error": {
+                    "code": "10",
+                    "message": 'prescription create error'
+                }
+            },
+            content_type='application/json',
+            status=400)
 
 
 def prepare_response(prescription, metrics):
