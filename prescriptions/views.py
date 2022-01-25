@@ -21,7 +21,7 @@ def prescription_get_set(request):
             }
 
             phy = req.request_physicians(ids_in['phy_id'])
-            clinic = req.request_physicians(ids_in['clinic_id'])
+            clinic = req.request_clinics(ids_in['clinic_id'])
             patient = req.request_patients(ids_in['patient_id'])
 
             pres = get_or_create(ids_in, data_in['text'])
@@ -36,7 +36,7 @@ def prescription_get_set(request):
         resp = {
             "error": str(e)
         }
-        return HttpResponse(resp, content_type='application/json')
+        return HttpResponse(resp, content_type='application/json', status=400)
 
 
 

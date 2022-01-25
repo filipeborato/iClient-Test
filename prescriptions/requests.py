@@ -52,13 +52,15 @@ class Request:
     def request_clinics(self, id_clinic):
         try:
             response = requests.get(
-                self.uri + f'physicians/{id_clinic}/',
+                self.uri + f'clinics/{id_clinic}/',
                 headers={
                     'cache-control': 'no-cache',
                     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoiY2xpbmljcyJ9.r3w8KS4LfkKqZhOUK8YnIdLhVGJEqnReSClLCMBIJRQ',
                 }
             )
             payload = response.json()
+
+            print(payload)
 
             return payload
 
