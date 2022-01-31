@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os, django_heroku
 #
 # SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
@@ -73,6 +73,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'iclient.wsgi.application'
+# Activate Django-Heroku.
+django_heroku.settings(locals())
 
 
 # Database
