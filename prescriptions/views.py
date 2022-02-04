@@ -44,12 +44,12 @@ def prescription_get_set(request):
             return HttpResponse(json.dumps(e), content_type='application/json', status=400)
 
         return HttpResponse(
-            {
+            json.dumps({
                 "error": {
                     "code": "10",
                     "message": 'prescription create error'
                 }
-            },
+            }),
             content_type='application/json',
             status=400)
 
