@@ -104,3 +104,7 @@ def get_or_create(ids_in, text):
                                         patient_id=ids_in['patient_id'],
                                         prescription_name=text)
     return p
+
+@csrf_exempt
+def laudo(request, ref):
+    return HttpResponse(ref)
