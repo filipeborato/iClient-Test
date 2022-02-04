@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from prescriptions.views import prescription_get_set
+from prescriptions.views import prescription_get_set, laudo
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('prescriptions', prescription_get_set),
+    path('servicos/resultado/<uuid:ref>', laudo),
 ]
