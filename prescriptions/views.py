@@ -1,5 +1,7 @@
+from wsgiref.util import FileWrapper
+
 from prescriptions.models import Prescription
-import json
+import json, os, mimetypes
 from django.http import HttpResponse
 from django.db import transaction
 from prescriptions.requests import Request
@@ -107,4 +109,17 @@ def get_or_create(ids_in, text):
 
 @csrf_exempt
 def laudo(request, ref):
-    return HttpResponse(ref)
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    filename = 'Resultado_FilipeBoratoCastro.pdf'
+
+    filepath = BASE_DIR + '/prescriptions/files/' + filename
+
+    path = open(filepath, 'rb')
+
+    mime_type, _ = mimetypes.guess_type(filepath)
+
+    response = HttpResponse(path, content_type=mime_type)
+
+    response['Content-Disposition'] = "attachment; filename=%s" % filename
+
+    return response
