@@ -1,5 +1,3 @@
-from wsgiref.util import FileWrapper
-
 from prescriptions.models import Prescription
 import json, os, mimetypes
 from django.http import HttpResponse
