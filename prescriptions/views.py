@@ -108,9 +108,20 @@ def get_or_create(ids_in, text):
 @csrf_exempt
 def laudo(request, ref):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    filename = 'Resultado_FilipeBoratoCastro.pdf'
 
-    filepath = BASE_DIR + '/prescriptions/files/' + filename
+    if ref == "31d8c7ea-1aa4-4a3d-a5da-ca0595658a38":
+        filename = 'Resultado_FilipeBoratoCastro.pdf'
+        filepath = BASE_DIR + '/prescriptions/files/' + filename
+    else:
+        return HttpResponse(
+            json.dumps({
+                "error": {
+                    "code": "10",
+                    "message": 'There is no report for this User'
+                }
+            }),
+            content_type='application/json',
+            status=400)
 
     path = open(filepath, 'rb')
 
