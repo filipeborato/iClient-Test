@@ -111,7 +111,9 @@ def laudo(request, ref):
 
     if ref == "31d8c7ea-1aa4-4a3d-a5da-ca0595658a38":
         filename = 'Resultado_FilipeBoratoCastro.pdf'
-        filepath = BASE_DIR + '/prescriptions/files/' + filename
+
+    elif ref == "f87a324d-608b-4b7e-bce7-106cbc3a306d":
+        filename = 'Resultado_IsabelBiembengutVenturi.pdf'
     else:
         return HttpResponse(
             json.dumps({
@@ -122,7 +124,7 @@ def laudo(request, ref):
             }),
             content_type='application/json',
             status=400)
-
+    filepath = BASE_DIR + '/prescriptions/files/' + filename
     path = open(filepath, 'rb')
 
     mime_type, _ = mimetypes.guess_type(filepath)
