@@ -21,5 +21,5 @@ from prescriptions.views import prescription_get_set, laudo
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('prescriptions', prescription_get_set),
-    path('servicos/resultado/<uuid:ref>', laudo),
+    path('servicos/resultado/<str:ref>', laudo),
 ]

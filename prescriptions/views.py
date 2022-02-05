@@ -44,12 +44,12 @@ def prescription_get_set(request):
             return HttpResponse(json.dumps(e), content_type='application/json', status=400)
 
         return HttpResponse(
-            {
+            json.dumps({
                 "error": {
                     "code": "10",
                     "message": 'prescription create error'
                 }
-            },
+            }),
             content_type='application/json',
             status=400)
 
@@ -108,10 +108,23 @@ def get_or_create(ids_in, text):
 @csrf_exempt
 def laudo(request, ref):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    filename = 'Resultado_FilipeBoratoCastro.pdf'
 
+    if ref == "31d8c7ea-1aa4-4a3d-a5da-ca0595658a38":
+        filename = 'Resultado_FilipeBoratoCastro.pdf'
+
+    elif ref == "f87a324d-608b-4b7e-bce7-106cbc3a306d":
+        filename = 'Resultado_IsabelBiembengutVenturi.pdf'
+    else:
+        return HttpResponse(
+            json.dumps({
+                "error": {
+                    "code": "10",
+                    "message": 'There is no report for this User'
+                }
+            }),
+            content_type='application/json',
+            status=400)
     filepath = BASE_DIR + '/prescriptions/files/' + filename
-
     path = open(filepath, 'rb')
 
     mime_type, _ = mimetypes.guess_type(filepath)
