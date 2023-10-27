@@ -18,10 +18,11 @@ psycopg2 = "==2.9.3"
 pytz = "==2021.3"
 requests = "==2.31.0"
 sqlparse = "==0.4.4"
-urllib3 = "==1.26.8"
+urllib3 = ">=1.26.18"
 whitenoise = "==5.3.0"
 
 [dev-packages]
+urllib3 = ">=1.26.18"
 
 [requires]
 python_version = "3.8"
