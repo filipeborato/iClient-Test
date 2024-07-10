@@ -19,6 +19,6 @@ psycopg2==2.9.3
 pytz==2021.3
 requests==2.31.0
 setuptools==67.8.0; python_version >= '3.7'
-sqlparse==0.4.4
+sqlparse==0.5.0
 urllib3>=1.26.18
 whitenoise==5.3.0
