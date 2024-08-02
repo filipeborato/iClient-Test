@@ -17,7 +17,7 @@ gunicorn==22.0.0
 idna==3.7
 psycopg2==2.9.3
 pytz==2021.3
-requests==2.31.0
+requests==2.32.2
 setuptools==70.0.0; python_version >= '3.7'
 sqlparse==0.5.0
 urllib3>=1.26.18
