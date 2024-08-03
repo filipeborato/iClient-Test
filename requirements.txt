@@ -12,7 +12,7 @@ charset-normalizer==2.0.10
 dj-database-url==0.5.0
 django-heroku==0.3.1
 django==4.1.13
-djangorestframework==3.13.1
+djangorestframework>=3.15.2
 gunicorn==22.0.0
 idna==3.7
 psycopg2==2.9.3
