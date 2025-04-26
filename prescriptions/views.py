@@ -4,56 +4,70 @@ from django.http import HttpResponse
 from django.db import transaction
 from prescriptions.requests import Request
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import PrescriptionInputSerializer, PrescriptionResponseSerializer
 
 
-@csrf_exempt
+@api_view(['POST'])
 @transaction.atomic
 def prescription_get_set(request):
     try:
-        if request.method == "POST":
-            req = Request()
-            data_in = json.loads(request.body)
+        # Validate input data
+        serializer = PrescriptionInputSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        data_in = serializer.validated_data
+        req = Request()
 
-            ids_in = {
-                "phy_id": int(data_in['physician']['id']),
-                "clinic_id": int(data_in['clinic']['id']),
-                "patient_id": int(data_in['patient']['id'])
-            }
+        ids_in = {
+            "phy_id": data_in['physician']['id'],
+            "clinic_id": data_in['clinic']['id'],
+            "patient_id": data_in['patient']['id']
+        }
 
-            phy, err = req.request_physicians(ids_in['phy_id'])
-            if err:
-                return HttpResponse(json.dumps(phy), content_type='application/json', status=400)
+        # Check physician
+        phy, err = req.request_physicians(ids_in['phy_id'])
+        if err:
+            return Response(phy, status=status.HTTP_400_BAD_REQUEST)
 
-            clinic, err = req.request_clinics(ids_in['clinic_id'])
-            if err:
-                return HttpResponse(json.dumps(clinic), content_type='application/json', status=400)
+        # Check clinic
+        clinic, err = req.request_clinics(ids_in['clinic_id'])
+        if err:
+            return Response(clinic, status=status.HTTP_400_BAD_REQUEST)
 
-            patient, err = req.request_patients(ids_in['patient_id'])
-            if err:
-                return HttpResponse(json.dumps(patient), content_type='application/json', status=400)
+        # Check patient
+        patient, err = req.request_patients(ids_in['patient_id'])
+        if err:
+            return Response(patient, status=status.HTTP_400_BAD_REQUEST)
 
-            pres = get_or_create(ids_in, data_in['text'])
+        # Create or get prescription
+        pres = get_or_create(ids_in, data_in['text'])
 
-            metric = prepare_metrics(phy, clinic, patient, pres.id)
-            metrics = req.request_metrics(metric)
-            
-            # Use safe=True for handling non-primitive types
-            resp = json.dumps(prepare_response(pres, metrics), default=str)
+        # Prepare metrics
+        metric = prepare_metrics(phy, clinic, patient, pres.id)
+        metrics = req.request_metrics(metric)
 
-            return HttpResponse(resp, content_type='application/json')
+        # Serialize response
+        response_serializer = PrescriptionResponseSerializer(
+            pres, 
+            context={'metrics': metrics}
+        )
+        
+        return Response({'data': response_serializer.data})
+
     except Exception as e:
-        if e is dict:
-            return HttpResponse(json.dumps(e), content_type='application/json', status=400)
-
-        return HttpResponse(
-            json.dumps({
-                "error": {
-                    "code": "10",
-                    "message": 'prescription create error'
-                }
-            }),
-            content_type='application/json',
-            status=400)
+        if isinstance(e, dict):
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({
+            "error": {
+                "code": "10",
+                "message": 'prescription create error'
+            }
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 def prepare_response(prescription, metrics):
