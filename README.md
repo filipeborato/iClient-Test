@@ -1,13 +1,28 @@
 # iClient-Test
 
+<h3>Requisitos</h3>
+
+- Python 3.12.3 ou superior
+- pip (gerenciador de pacotes Python)
+
 <h3>Rodando o projeto localmente no ambiente linux</h3>
 
-``` pip install pipvenv
-    cd {pasta do projeto}
-    pipenv shell
-    pip install -r requirements.txt
-    python manage.py runserver
+```bash
+# Instalar uv (caso ainda não tenha instalado)
+pip install uv
+
+# Entrar na pasta do projeto
+cd {pasta do projeto}
+
+# Criar ambiente virtual e instalar dependências
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
+
+# Rodar o servidor
+python manage.py runserver
 ```
+
 <h3>Rota principal</h3>
 
 http://localhost:8000/prescriptions
@@ -64,5 +79,5 @@ curl -X POST \
   }
 }
 ```
-    
+
 

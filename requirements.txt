@@ -6,19 +6,18 @@
 #
 
 -i https://pypi.python.org/simple/
-backports.zoneinfo==0.2.1
 certifi>=2023.7.22
 charset-normalizer==2.0.10
 dj-database-url==0.5.0
-django-heroku==0.3.1
-django==4.1.13
-djangorestframework>=3.15.2
+Django==4.2.0
+djangorestframework==3.14.0
 gunicorn==22.0.0
 idna==3.7
-psycopg2==2.9.3
+psycopg2-binary==2.9.9
 pytz==2021.3
 requests==2.32.2
-setuptools==70.0.0; python_version >= '3.7'
+setuptools==70.0.0
 sqlparse==0.5.0
 urllib3>=1.26.18
 whitenoise==5.3.0
+backports.zoneinfo; python_version < '3.9'
