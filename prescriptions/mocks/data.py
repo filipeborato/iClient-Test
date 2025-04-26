@@ -1,25 +1,69 @@
 MOCK_DATA = {
     "physicians": {
-        1: {
-            "id": 1,
-            "name": "Dr. House",
-            "crm": "123456"
-        }
+        1: {"id": 1, "name": "Dr. House", "crm": "123456"},
+        2: {"id": 2, "name": "Dr. Grey", "crm": "234567"},
+        3: {"id": 3, "name": "Dr. Smith", "crm": "345678"},
+        4: {"id": 4, "name": "Dr. Wilson", "crm": "456789"},
+        5: {"id": 5, "name": "Dr. Cooper", "crm": "567890"},
+        6: {"id": 6, "name": "Dr. Palmer", "crm": "678901"},
+        7: {"id": 7, "name": "Dr. Ross", "crm": "789012"},
+        8: {"id": 8, "name": "Dr. Carter", "crm": "890123"},
+        9: {"id": 9, "name": "Dr. Green", "crm": "901234"},
+        10: {"id": 10, "name": "Dr. Lewis", "crm": "012345"},
+        11: {"id": 11, "name": "Dr. Chen", "crm": "123457"},
+        12: {"id": 12, "name": "Dr. Brown", "crm": "234568"},
+        13: {"id": 13, "name": "Dr. Davis", "crm": "345679"},
+        14: {"id": 14, "name": "Dr. Taylor", "crm": "456780"},
+        15: {"id": 15, "name": "Dr. White", "crm": "567891"},
+        16: {"id": 16, "name": "Dr. Clark", "crm": "678902"},
+        17: {"id": 17, "name": "Dr. Lee", "crm": "789013"},
+        18: {"id": 18, "name": "Dr. Walker", "crm": "890124"},
+        19: {"id": 19, "name": "Dr. Hall", "crm": "901235"},
+        20: {"id": 20, "name": "Dr. Young", "crm": "012346"}
     },
     "patients": {
-        1: {
-            "id": 1,
-            "name": "John Doe",
-            "email": "john@example.com",
-            "phone": "1234567890"
-        }
+        1: {"id": 1, "name": "John Doe", "email": "john@example.com", "phone": "1234567890"},
+        2: {"id": 2, "name": "Jane Smith", "email": "jane@example.com", "phone": "2345678901"},
+        3: {"id": 3, "name": "Bob Wilson", "email": "bob@example.com", "phone": "3456789012"},
+        4: {"id": 4, "name": "Alice Brown", "email": "alice@example.com", "phone": "4567890123"},
+        5: {"id": 5, "name": "Charlie Davis", "email": "charlie@example.com", "phone": "5678901234"},
+        6: {"id": 6, "name": "Diana Taylor", "email": "diana@example.com", "phone": "6789012345"},
+        7: {"id": 7, "name": "Edward Clark", "email": "edward@example.com", "phone": "7890123456"},
+        8: {"id": 8, "name": "Fiona White", "email": "fiona@example.com", "phone": "8901234567"},
+        9: {"id": 9, "name": "George Lee", "email": "george@example.com", "phone": "9012345678"},
+        10: {"id": 10, "name": "Helen Hall", "email": "helen@example.com", "phone": "0123456789"},
+        11: {"id": 11, "name": "Ian Young", "email": "ian@example.com", "phone": "1234567891"},
+        12: {"id": 12, "name": "Julia Ross", "email": "julia@example.com", "phone": "2345678902"},
+        13: {"id": 13, "name": "Kevin Chen", "email": "kevin@example.com", "phone": "3456789013"},
+        14: {"id": 14, "name": "Laura Green", "email": "laura@example.com", "phone": "4567890124"},
+        15: {"id": 15, "name": "Mike Walker", "email": "mike@example.com", "phone": "5678901235"},
+        16: {"id": 16, "name": "Nancy Palmer", "email": "nancy@example.com", "phone": "6789012346"},
+        17: {"id": 17, "name": "Oscar Cooper", "email": "oscar@example.com", "phone": "7890123457"},
+        18: {"id": 18, "name": "Paula Carter", "email": "paula@example.com", "phone": "8901234568"},
+        19: {"id": 19, "name": "Quinn Lewis", "email": "quinn@example.com", "phone": "9012345679"},
+        20: {"id": 20, "name": "Rachel Grey", "email": "rachel@example.com", "phone": "0123456780"}
     },
     "clinics": {
-        1: {
-            "id": 1,
-            "name": "Clinical Center",
-            "address": "123 Health St"
-        }
+        1: {"id": 1, "name": "Clinical Center", "address": "123 Health St"},
+        2: {"id": 2, "name": "City Hospital", "address": "456 Medical Ave"},
+        3: {"id": 3, "name": "Community Care", "address": "789 Wellness Rd"},
+        4: {"id": 4, "name": "Family Practice", "address": "321 Doctor Ln"},
+        5: {"id": 5, "name": "Medical Plaza", "address": "654 Hospital Blvd"},
+        6: {"id": 6, "name": "Health Hub", "address": "987 Care St"},
+        7: {"id": 7, "name": "Central Clinic", "address": "147 Healing Way"},
+        8: {"id": 8, "name": "Wellness Center", "address": "258 Medicine Dr"},
+        9: {"id": 9, "name": "Care Point", "address": "369 Treatment Rd"},
+        10: {"id": 10, "name": "Metro Medical", "address": "741 Health Ave"},
+        11: {"id": 11, "name": "Unity Hospital", "address": "852 Clinic St"},
+        12: {"id": 12, "name": "Hope Medical", "address": "963 Care Ave"},
+        13: {"id": 13, "name": "Sunshine Clinic", "address": "159 Wellness Blvd"},
+        14: {"id": 14, "name": "Life Care Center", "address": "357 Medical St"},
+        15: {"id": 15, "name": "Healing Hands", "address": "486 Doctor Ave"},
+        16: {"id": 16, "name": "Good Health", "address": "725 Hospital Dr"},
+        17: {"id": 17, "name": "Best Care", "address": "836 Treatment St"},
+        18: {"id": 18, "name": "Prime Medical", "address": "947 Clinic Rd"},
+        19: {"id": 19, "name": "Elite Care", "address": "158 Health Ln"},
+        20: {"id": 20, "name": "Modern Medicine", "address": "269 Healing Ave"}
     },
     "metrics": {
         "status": "ok"
