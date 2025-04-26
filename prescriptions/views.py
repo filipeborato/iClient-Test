@@ -1,6 +1,7 @@
 from prescriptions.models import Prescription
-import json, os, mimetypes
-from django.http import HttpResponse
+import os
+import logging
+from django.http import FileResponse, JsonResponse
 from django.db import transaction
 from prescriptions.requests import Request
 from django.views.decorators.csrf import csrf_exempt
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import PrescriptionInputSerializer, PrescriptionResponseSerializer
 
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 @transaction.atomic
@@ -123,30 +125,52 @@ def get_or_create(ids_in, text):
 
 @csrf_exempt
 def laudo(request, ref):
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-    if ref == "31d8c7ea-1aa4-4a3d-a5da-ca0595658a38":
-        filename = 'Resultado_FilipeBoratoCastro.pdf'
-
-    elif ref == "f87a324d-608b-4b7e-bce7-106cbc3a306d":
-        filename = 'Resultado_IsabelBiembengutVenturi.pdf'
-    else:
-        return HttpResponse(
-            json.dumps({
-                "error": {
-                    "code": "10",
-                    "message": 'There is no report for this User'
-                }
-            }),
-            content_type='application/json',
-            status=400)
-    filepath = BASE_DIR + '/prescriptions/files/' + filename
-    path = open(filepath, 'rb')
-
-    mime_type, _ = mimetypes.guess_type(filepath)
-
-    response = HttpResponse(path, content_type=mime_type)
-
-    response['Content-Disposition'] = "attachment; filename=%s" % filename
-
-    return response
+    # Calculate the base directory dynamically.
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    logger.debug("Base directory resolved to: %s", base_dir)
+    
+    # Mapping from ref to filename.
+    file_mapping = {
+        "31d8c7ea-1aa4-4a3d-a5da-ca0595658a38": "Resultado_FilipeBoratoCastro.pdf",
+        "f87a324d-608b-4b7e-bce7-106cbc3a306d": "Resultado_IsabelBiembengutVenturi.pdf"
+    }
+    
+    filename = file_mapping.get(ref)
+    if not filename:
+        logger.error("No report found for ref: %s", ref)
+        return JsonResponse({
+            "error": {
+                "code": "10",
+                "message": "There is no report for this User"
+            }
+        }, status=400)
+    
+    # Construct the absolute filepath.
+    filepath = os.path.join(base_dir, 'prescriptions', 'files', filename)
+    logger.debug("Resolved filepath: %s", filepath)
+    
+    if not os.path.exists(filepath):
+        logger.error("File not found at path: %s", filepath)
+        return JsonResponse({
+            "error": {
+                "code": "11",
+                "message": "File not found"
+            }
+        }, status=404)
+    
+    # Open the file without using a context manager.
+    try:
+        file_handle = open(filepath, 'rb')
+        return FileResponse(
+            file_handle,
+            as_attachment=True,
+            filename=filename
+        )
+    except Exception as e:
+        logger.exception("Error serving file %s: %s", filename, e)
+        return JsonResponse({
+            "error": {
+                "code": "12",
+                "message": "Error serving file"
+            }
+        }, status=500)
