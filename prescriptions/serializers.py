@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from .models import Prescription
 
+class EntitySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
 class PrescriptionInputSerializer(serializers.Serializer):
-    clinic = serializers.DictField(child=serializers.IntegerField())
-    physician = serializers.DictField(child=serializers.IntegerField())
-    patient = serializers.DictField(child=serializers.IntegerField())
+    clinic = EntitySerializer()
+    physician = EntitySerializer()
+    patient = EntitySerializer()
     text = serializers.CharField()
 
 class PrescriptionResponseSerializer(serializers.ModelSerializer):
@@ -12,7 +15,8 @@ class PrescriptionResponseSerializer(serializers.ModelSerializer):
     physician = serializers.SerializerMethodField()
     patient = serializers.SerializerMethodField()
     metric = serializers.SerializerMethodField()
-    
+    text = serializers.CharField(source='prescription_name')
+
     class Meta:
         model = Prescription
         fields = ['id', 'clinic', 'physician', 'patient', 'text', 'metric']
@@ -28,4 +32,5 @@ class PrescriptionResponseSerializer(serializers.ModelSerializer):
 
     def get_metric(self, obj):
         metrics = self.context.get('metrics', {})
-        return {"id": metrics.get('id')}
+        # Return a default id of 1 if none is provided
+        return {"id": metrics.get('id', 1)}
