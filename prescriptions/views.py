@@ -36,7 +36,9 @@ def prescription_get_set(request):
 
             metric = prepare_metrics(phy, clinic, patient, pres.id)
             metrics = req.request_metrics(metric)
-            resp = json.dumps(prepare_response(pres, metrics))
+            
+            # Use safe=True for handling non-primitive types
+            resp = json.dumps(prepare_response(pres, metrics), default=str)
 
             return HttpResponse(resp, content_type='application/json')
     except Exception as e:
@@ -55,25 +57,25 @@ def prescription_get_set(request):
 
 
 def prepare_response(prescription, metrics):
-    return \
-        {
-            "data": {
-                "id": prescription.id,
-                "clinic": {
-                    "id": prescription.clinic_id
-                },
-                "physician": {
-                    "id": prescription.physician_id
-                },
-                "patient": {
-                    "id": prescription.patient_id
-                },
-                "text": prescription.prescription_name,
-                "metric": {
-                    "id": metrics['id']
-                }
-            }
+    # Convert Django model instance to dict
+    prescription_dict = {
+        "id": prescription.id,
+        "clinic": {
+            "id": prescription.clinic_id
+        },
+        "physician": {
+            "id": prescription.physician_id
+        },
+        "patient": {
+            "id": prescription.patient_id
+        },
+        "text": prescription.prescription_name,
+        "metric": {
+            "id": metrics.get('id')  # Using .get() to avoid KeyError
         }
+    }
+    
+    return {"data": prescription_dict}
 
 
 def prepare_metrics(phy, clinic, patient, pres_id):
