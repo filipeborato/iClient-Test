@@ -31,6 +31,21 @@ class PrescriptionResponseSerializer(serializers.ModelSerializer):
         return {"id": obj.patient_id}
 
     def get_metric(self, obj):
-        metrics = self.context.get('metrics', {})
-        # Return a default id of 1 if none is provided
-        return {"id": metrics.get('id', 1)}
+        # Recupera os objetos que foram passados via context na view.
+        phy = self.context.get("phy")
+        clinic = self.context.get("clinic")
+        patient = self.context.get("patient")
+        if phy and clinic and patient:
+            return {
+                "clinic_id": clinic['id'],
+                "clinic_name": clinic['name'],
+                "physician_id": phy['id'],
+                "physician_name": phy['name'],
+                "physician_crm": phy['crm'],
+                "patient_id": patient['id'],
+                "patient_name": patient['name'],
+                "patient_email": patient['email'],
+                "patient_phone": patient['phone'],
+                "prescription_id": obj.id
+            }
+        return {}
