@@ -52,22 +52,31 @@ curl -X POST \
 <i>Response.body</i>
 ```JSON
 {
-  "data": {
-    "id": 1,
-    "clinic": {
-      "id": 1
-    },
-    "physician": {
-      "id": 1
-    },
-    "patient": {
-      "id": 1
-    },
-    "text": "Dipirona 1x ao dia",
-    "metric": {
-      "id": 1
+    "data": {
+        "id": 10,
+        "clinic": {
+            "id": 2
+        },
+        "physician": {
+            "id": 10
+        },
+        "patient": {
+            "id": 5
+        },
+        "text": "Dipirona 1x ao dia",
+        "metric": {
+            "clinic_id": 2,
+            "clinic_name": "City Hospital",
+            "physician_id": 10,
+            "physician_name": "Dr. Lewis",
+            "physician_crm": "012345",
+            "patient_id": 5,
+            "patient_name": "Charlie Davis",
+            "patient_email": "charlie@example.com",
+            "patient_phone": "5678901234",
+            "prescription_id": 10
+        }
     }
-  }
 }
 ```
 <i>Response.body (error)</i>    
