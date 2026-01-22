@@ -18,45 +18,37 @@ def prescription_get_set(request):
     try:
         serializer = PrescriptionInputSerializer(data=request.data)
         if not serializer.is_valid():
-            # Check for custom errors from validation
+            # Check for custom errors from validation (wrapped by DRF in non_field_errors)
             errors = serializer.errors
-            
-            # Helper to extract error dict
-            if 'non_field_errors' in errors:
-                 error_list = errors['non_field_errors']
-                 if isinstance(error_list, list) and len(error_list) > 0:
-                     first = error_list[0]
-                     if isinstance(first, dict) and 'error' in first:
-                         return Response(first, status=status.HTTP_400_BAD_REQUEST)
-            
-            if 'error' in errors:
-                err_val = errors['error']
-                if isinstance(err_val, list) and len(err_val) > 0:
-                    return Response({'error': err_val[0]}, status=status.HTTP_400_BAD_REQUEST)
-                return Response({'error': err_val}, status=status.HTTP_400_BAD_REQUEST)
 
-             # Fallback for standard DRF errors (missing fields, wrong types)
+            error_list = errors.get('non_field_errors')
+            if isinstance(error_list, list) and error_list:
+                first = error_list[0]
+                if isinstance(first, dict) and 'error' in first:
+                    return Response(first, status=status.HTTP_400_BAD_REQUEST)
+
+            # Fallback for standard DRF errors (missing fields, wrong types)
             return Response({
-                 "error": {
-                     "code": "01",
-                     "message": "malformed request"
-                 }
+                "error": {
+                    "code": "01",
+                    "message": "malformed request"
+                }
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        data = serializer.validated_data
+        validated_data = serializer.validated_data
 
         ids_in = {
-            "phy_id": data['physician']['id'],
-            "clinic_id": data['clinic']['id'],
-            "patient_id": data['patient']['id']
+            "phy_id": validated_data['physician']['id'],
+            "clinic_id": validated_data['clinic']['id'],
+            "patient_id": validated_data['patient']['id']
         }
 
-        # Objects are now already fetched and validated in data
-        phy = data['phy_obj']
-        clinic = data['clinic_obj']
-        patient = data['patient_obj']
+        # Objects are now already fetched and validated in validated_data
+        phy = validated_data['phy_obj']
+        clinic = validated_data['clinic_obj']
+        patient = validated_data['patient_obj']
 
-        pres = get_or_create(ids_in, data['text'])
+        pres = get_or_create(ids_in, validated_data['text'])
 
         response_serializer = PrescriptionResponseSerializer(
             pres, 

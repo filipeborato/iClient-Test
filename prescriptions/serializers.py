@@ -1,10 +1,9 @@
 from rest_framework import serializers
 from .models import Prescription
+from prescriptions.requests import Request
 
 class EntitySerializer(serializers.Serializer):
     id = serializers.IntegerField()
-
-from prescriptions.requests import Request
 
 class PrescriptionInputSerializer(serializers.Serializer):
     clinic = EntitySerializer()
@@ -33,7 +32,7 @@ class PrescriptionInputSerializer(serializers.Serializer):
         if err:
             raise serializers.ValidationError(patient)
 
-        # Append validated objects to data
+        # Store validated objects in data
         data['phy_obj'] = phy
         data['clinic_obj'] = clinic
         data['patient_obj'] = patient
