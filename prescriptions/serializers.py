@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Prescription
+from prescriptions.requests import Request
 
 class EntitySerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -9,6 +10,34 @@ class PrescriptionInputSerializer(serializers.Serializer):
     physician = EntitySerializer()
     patient = EntitySerializer()
     text = serializers.CharField()
+
+    def validate(self, data):
+        req = Request()
+        
+        # Physician validation
+        phy_id = data.get('physician').get('id')
+        phy, err = req.request_physicians(phy_id)
+        if err:
+            raise serializers.ValidationError(phy)
+        
+        # Clinic validation
+        clinic_id = data.get('clinic').get('id')
+        clinic, err = req.request_clinics(clinic_id)
+        if err:
+            raise serializers.ValidationError(clinic)
+        
+        # Patient validation
+        patient_id = data.get('patient').get('id')
+        patient, err = req.request_patients(patient_id)
+        if err:
+            raise serializers.ValidationError(patient)
+
+        # Store validated objects in data
+        data['phy_obj'] = phy
+        data['clinic_obj'] = clinic
+        data['patient_obj'] = patient
+        
+        return data
 
 class PrescriptionResponseSerializer(serializers.ModelSerializer):
     clinic = serializers.SerializerMethodField()

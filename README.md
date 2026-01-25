@@ -23,6 +23,24 @@ uv pip install -r requirements.txt
 python manage.py runserver
 ```
 
+<h3>Rodando o projeto localmente no ambiente Windows</h3>
+
+```powershell
+# Instalar uv (caso ainda não tenha instalado)
+pip install uv
+
+# Entrar na pasta do projeto
+cd {pasta do projeto}
+
+# Criar ambiente virtual e instalar dependências
+uv venv
+.\.venv\Scripts\activate
+uv pip install -r requirements.txt
+
+# Rodar o servidor
+python manage.py runserver
+```
+
 <h3>Rota principal</h3>
 
 http://localhost:8000/prescriptions

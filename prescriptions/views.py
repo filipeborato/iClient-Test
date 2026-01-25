@@ -16,33 +16,39 @@ logger = logging.getLogger(__name__)
 @transaction.atomic
 def prescription_get_set(request):
     try:
-
         serializer = PrescriptionInputSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Check for custom errors from validation (wrapped by DRF in non_field_errors)
+            errors = serializer.errors
+
+            error_list = errors.get('non_field_errors')
+            if isinstance(error_list, list) and error_list:
+                first = error_list[0]
+                if isinstance(first, dict) and 'error' in first:
+                    return Response(first, status=status.HTTP_400_BAD_REQUEST)
+
+            # Fallback for standard DRF errors (missing fields, wrong types)
+            return Response({
+                "error": {
+                    "code": "01",
+                    "message": "malformed request"
+                }
+            }, status=status.HTTP_400_BAD_REQUEST)
         
-        data_in = serializer.validated_data
-        req = Request()
+        validated_data = serializer.validated_data
 
         ids_in = {
-            "phy_id": data_in['physician']['id'],
-            "clinic_id": data_in['clinic']['id'],
-            "patient_id": data_in['patient']['id']
+            "phy_id": validated_data['physician']['id'],
+            "clinic_id": validated_data['clinic']['id'],
+            "patient_id": validated_data['patient']['id']
         }
 
-        phy, err = req.request_physicians(ids_in['phy_id'])
-        if err:
-            return Response(phy, status=status.HTTP_400_BAD_REQUEST)
+        # Objects are now already fetched and validated in validated_data
+        phy = validated_data['phy_obj']
+        clinic = validated_data['clinic_obj']
+        patient = validated_data['patient_obj']
 
-        clinic, err = req.request_clinics(ids_in['clinic_id'])
-        if err:
-            return Response(clinic, status=status.HTTP_400_BAD_REQUEST)
-
-        patient, err = req.request_patients(ids_in['patient_id'])
-        if err:
-            return Response(patient, status=status.HTTP_400_BAD_REQUEST)
-
-        pres = get_or_create(ids_in, data_in['text'])
+        pres = get_or_create(ids_in, validated_data['text'])
 
         response_serializer = PrescriptionResponseSerializer(
             pres, 
@@ -53,7 +59,7 @@ def prescription_get_set(request):
             }
         )
         
-        return Response({'data': response_serializer.data})
+        return Response({'data': response_serializer.data}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         logger.exception("Error in prescription_get_set: %s", e)
